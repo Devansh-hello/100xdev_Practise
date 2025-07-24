@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<script src="https://cdn.jsdelivr.net/npm/axios@1.6.7/dist/axios.min.js"></script>
+<script>
+    async function showinfo(){
+        const token = localStorage.getItem("token");
+        if (token){
+            const response = await axios.get("http://localhost:3000/api/profile",{
+            headers: { "token":token}
+            })
+
+            const Email_el = document.createElement("h3")
+            Email_el.innerHTML = `Email: ${response.data.Email}`;
+
+            const Pass_el = document.createElement("h3")
+            Pass_el.innerHTML= `Password: ${response.data.Password}`
+
+            document.getElementById("main_div").appendChild(Email_el)
+            document.getElementById("main_div").appendChild(Pass_el)
+
+
+        }
+        
+    }
+    window.onload = showinfo;
+</script>
+<body>
+    <div>
+        <H1>Your Info</H1>
+    </div>
+    <div id="main_div">
+        
+    </div>
+</body>
+</html>
