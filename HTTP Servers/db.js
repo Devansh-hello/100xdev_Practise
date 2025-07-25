@@ -1,7 +1,5 @@
 const mongoose = require("mongoose")
 
-
-
 mongoose.connect("mongodb+srv://DevZero:Kamal0342@learn.lzqh8uq.mongodb.net/practise")
 
 const Schema = mongoose.Schema;

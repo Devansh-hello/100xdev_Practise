@@ -1,6 +1,9 @@
 const express = require("express")
 const jwt = require("jsonwebtoken")
 const { UserModel } = require("./db");
+const bcrypt = require("bcrypt");
+const zod = require("zod")
+
 const app = express();
 const JWT_SECRET = "ojfwefo22op@wefwf"
 
@@ -16,17 +19,24 @@ app.get("/signup",(req,res)=>{
 
 app.post("/signup", async (req,res)=>{
 
+    try{
+        const Username = req.body.Username;
+        const Email = req.body.Email;
+        const Password = req.body.Password;
+
+        const encrypted_pass = await bcrypt.hash(Password,5);
+
+        await UserModel.create({
+            Username: Username,
+            Email: Email,
+            Password: encrypted_pass
+        })
+    }catch(error){
+        res.json({
+            message: "Signup Failed"
+        })
+    }
     
-    const Username = req.body.Username;
-    const Email = req.body.Email;
-    const Password = req.body.Password;
-
-    await UserModel.create({
-        Username: Username,
-        Email: Email,
-        Password: Password
-    })
-
     res.send({
         message: "Account Created"
     })
