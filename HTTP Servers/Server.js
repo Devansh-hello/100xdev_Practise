@@ -2,7 +2,7 @@ const express = require("express")
 const jwt = require("jsonwebtoken")
 const { UserModel } = require("./db");
 const bcrypt = require("bcrypt");
-const zod = require("zod")
+const z = require("zod")
 
 const app = express();
 const JWT_SECRET = "ojfwefo22op@wefwf"
@@ -18,6 +18,20 @@ app.get("/signup",(req,res)=>{
 })
 
 app.post("/signup", async (req,res)=>{
+    const parsed_Info = z.object({
+        Username: z.string().min(2).max(10),
+        Email: z.email(),
+        Password: z.string().min(8).max(20)
+    })
+    const complete_Parsed = parsed_Info.safeParse(req.body);
+
+    if(!complete_Parsed){
+        res.json({
+            error: complete_Parsed.error
+            
+        })
+        return
+    }
 
     try{
         const Username = req.body.Username;
@@ -50,11 +64,13 @@ app.post("/signin",async(req,res)=>{
     const Password = req.body.Password;
 
     const user = await UserModel.findOne({
-        Email:Email,
-        Password:Password,
+        Email:Email
     })
 
-    if(user){
+    const pass_Check = bcrypt.compare(user.Password, Password)
+
+
+    if(pass_Check){
         const token = jwt.sign({
             id: user._id.toString(),
         },JWT_SECRET)
