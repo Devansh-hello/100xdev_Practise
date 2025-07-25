@@ -25,7 +25,7 @@ app.post("/signup", async (req,res)=>{
     })
     const complete_Parsed = parsed_Info.safeParse(req.body);
 
-    if(!complete_Parsed){
+    if(!complete_Parsed.success){
         res.json({
             error: complete_Parsed.error
             
@@ -45,15 +45,17 @@ app.post("/signup", async (req,res)=>{
             Email: Email,
             Password: encrypted_pass
         })
+        return res.send({
+        message: "Account Created"
+        })
+
     }catch(error){
         res.json({
             message: "Signup Failed"
         })
     }
     
-    res.send({
-        message: "Account Created"
-    })
+    
 })
 app.get("/signin",(req,res)=>{
     res.sendFile(__dirname+"/signin.html")
